@@ -22,3 +22,20 @@ Dalam sebuah class, jumlah unit test tergantung dari function yang dimiliki oleh
 > Suppose that after writing the CreateProductFunctionalTest.java along with the corresponding test case, you were asked to create another functional test suite that verifies the number of items in the product list. You decided to create a new Java class similar to the prior functional test suites with the same setup procedures and instance variables. What do you think about the cleanliness of the code of the new functional test suite? Will the new code reduce the code quality? Identify the potential clean code issues, explain the reasons, and suggest possible improvements to make the code cleaner!
 
 Pembuatan Java class yang sama dengan functional test utama tersebut dapat mengurangi code cleanliness karena adanya duplikasi dan redundansi kode. Solusi yang dapat dilakukan adlaah dengan membuat superclass yang berisi Set Up umum dan menggunakannya di dalam subclass yang membutuhkan Set Up umum tersebut. Dengan hal tersebut, duplikasi dan redundansi kode yang menyebabkan berkurangnya code cleanliness dapat dicegah.
+
+---
+# Tutorial 2
+---
+### Refleksi
+> List the code quality issue(s) that you fixed during the exercise and explain your strategy on fixing them.
+- Menambahkan izin yang sesuai di dalam `ci.yml` berupa `permissions: contents: read` yang mengatur _token permission_ minimum dari sebuah GITHUB_TOKEN
+- Menambahkan _Step Security Harden-Runner_ dalam _workflow_ GitHub Actions untuk mengaudit semua koneksi keluar (_outbound calls_) dari runner yang menjalankan workflow pada file `pmd.yml` dan juga `scorecard.yml`.
+- Menambahkan branch protection pada branch _master_ dengan menambahkan pelarangan deletion dan juga mencegah _force-push_ pada branch _master_.
+- Menggunakan hash commit pada _upload artifact_ dan juga _upload to code-scanning_ pada `scorecard.yml` untuk menghindari perubahan tak terduga pada action sehingga lebih aman dan stabil.
+- Menghapus import yang tidak digunakan atau tidak diperlukan yakni `import org.springframework.web.bind.annotation.*;`, menjadi import hal-hal yang digunakan saja dari satu package tersebut
+- Menghapus modifier public dari method method di `ProductService.java`, karena secara default java memberikan modifier public dan tidak perlu state ulang.
+
+> Look at your CI/CD workflows (GitHub)/pipelines (GitLab). Do you think the current implementation has met the definition of Continuous Integration and Continuous Deployment? Explain the reasons (minimum 3 sentences)!
+
+Menurut saya, CI/CD Workflow yang saya buat sudah memenuhi definisi _Continuous Integration and Continuous Deployment_. Continuous Integration saya terletak pada file `ci.yml` yang melakukan build dan unit test secara otomatis setiap kali terdapat push dan juga pull request. Kemudian saya juga mengintegrasikan `Scorecard` dan `PMD` untuk tetap mengevaluasi security issue yang muncul setiap kali ada perubahan dalam kode. Lalu dalam Continuous deployment, saya menggunakan service _koyeb_ yang akan melakukan deployment setiap kali ada push atau pull di branch _master_.
+
