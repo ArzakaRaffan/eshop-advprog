@@ -36,6 +36,25 @@ Pembuatan Java class yang sama dengan functional test utama tersebut dapat mengu
 - Menghapus modifier public dari method method di `ProductService.java`, karena secara default java memberikan modifier public dan tidak perlu state ulang.
 
 > Look at your CI/CD workflows (GitHub)/pipelines (GitLab). Do you think the current implementation has met the definition of Continuous Integration and Continuous Deployment? Explain the reasons (minimum 3 sentences)!
-
 Menurut saya, CI/CD Workflow yang saya buat sudah memenuhi definisi _Continuous Integration and Continuous Deployment_. Continuous Integration saya terletak pada file `ci.yml` yang melakukan build dan unit test secara otomatis setiap kali terdapat push dan juga pull request. Kemudian saya juga mengintegrasikan `Scorecard` dan `PMD` untuk tetap mengevaluasi security issue yang muncul setiap kali ada perubahan dalam kode. Lalu dalam Continuous deployment, saya menggunakan service _koyeb_ yang akan melakukan deployment setiap kali ada push atau pull di branch _master_.
+
+---
+# Tutorial 3
+---
+> Explain what principles you apply to your project!
+- **Single Responsibility Principle (SRP)**: Principle ini saya implementasikan dengan memastikan setiap kelas hanya memiliki satu tanggung jawab saja. Modifikasi yang saya buat untuk menerapkan SRP ini adalah dengan memisahkan kelas `ProductController` dengan kelas `CarController` dimana masing-masing kelas hanya menangani tanggung jawab dan fungsi terkait HTTP mengenai Product dan Car secara terpisah.
+- **Open-Closed Principle (OCP)**: Implementasi OCP saya lakukan dengan memungkinkan adanya ekstensi tanpa mengubah dan memodifikasi class tersebut. Contoh yang saya implementasikan adalah pada `CarService`, dimana interface tersebut diimplementasikan pada kelas yang berbeda yakni `CarServiceImpl` tanpa mengubah apa yang terdapat pada `CarService` itu sendiri.
+- **Liskov Subtitution Principle (LSP)**: LSP memungkinkan subclass untuk 'menggantikan' superclass tanpa mengganggu fungsionalitas dari superclass tersebut. `CarServiceImpl` pada kode saya meng-override method-method yang ada di `CarService` tanpa sama sekali mengganggu class `CarService` sehingga kelas tersebut dapat dipakai dimanapun kelas tersebut dibutuhkan.
+- **Interface Segregation Principle (ISP)**: Interface yang lebih besar dipecah menjadi interface yang lebih kecil. Pada kode saya, saya memisahkan interface untuk Product dan Car sehingga tidak menjadi satu interface yang sama. Menjadikan kode lebih baik karena masing-masing interface bertanggung jawab pada tugas dengan scope yang lebih kecil.
+- **Dependency Inversion Principle (DIP)**: dalam Principle DIP ini, class-class yang ada dalam kode seharusnya dependent terhadap abstract class, bukan concrete class. Pengimplementasian dalam kode saya adalah mengakses method-method dalam `CarServiceImpl` melalui interface yang merupakan abstract class pada `CarController`, tidak secara langsung mengakses concrete class dari `CarServiceImpl`.
+
+> Explain the advantages of applying SOLID principles to your project with examples
+- **Maintainability**: Kemudahan dalam pemeliharaan atau maintainability didapatkan karena class-class sudah dipisah berdasarkan tanggung jawabnya masing-masing. Misalkan jika terdapat perubahan pada logika method-method Car, maka yang perlu diubah hanya `CarServiceImpl` dan tidak perlu hingga mengubah `CarRepository`.
+- **Lower Risk of Bugs**: Pengimplementasian OCP memudahkan developer untuk mengubah dan juga menambahkan sebuah fitur tanpa perlu takut terdapat bug yang terjadi di kelas yang tidak dimdofikasi. Hal ini dapat terjadi karena kode sudah menerapkan ekstensi terhadap class-class sehingga tidak akan mempengaruhi sisi lain program. Contohnya developer hanya perlu mengubah `CarServiceImpl` tanpa mengubah `CarService` karena terdapat ekstensi yang jelas.
+- **Testability**: Pemisahan yang jelas terhadap logika bisnis program memudahkan tester untuk melakukan debugging dan testing karena kesalahan pada testing dapat diketahui letaknya dengan mudah. Contohnya terdapat kegagalan akses sebuah page saat testing, tester akan tahu kesalahn pasti terletak pada controller dan method mana yang terdampak.
+
+> Explain the disadvantages of not applying SOLID principles to your project with examples.
+- **Unexpected behavior**: Tidak adanya pemisahan tanggung jawab yang jelas dalam subclass dapat menyebabkan perubahan yang tidak diekspektasikan untuk terjadi dalam superclass. Contohnya sebelum penerapan Single Responsibility Principle (SRP), `CarController` dapat saja mengakses data dalam `ProductController` jika menggunakan nama yang sama, padahal mereka berdua menangani dua objek yang tidak ada hubungannya.
+- **Unnecesary Dependencies**: Pada kode awal `CarController` men-extends `ProductController`, hal ini harus dipisahkan logikanya karena dua hal tersebut berbeda. Dependencies yang tidak perlu ini dapat mempersulit code maintainability.
+- **Code Duplication**: Tanpa penerapan SOLID, sebuah concrete class atau abstract class cenderung memiliki scope yang besar sehingga memungkinkan adanya duplikasi kode yang tidak perlu. Pemisahan antara `CarController`, `CarRepository`, dan juga `CarService` dapat mereduksi kemungkinan duplikasi kode.
 
