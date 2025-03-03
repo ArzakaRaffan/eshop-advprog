@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         List<Product> products = new ArrayList<>();
 
         Product product1 = new Product();
