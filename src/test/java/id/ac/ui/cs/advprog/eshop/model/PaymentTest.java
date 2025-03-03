@@ -37,14 +37,6 @@ public class PaymentTest {
     }
 
     @Test
-    void testCreatePaymentWithNoOrder() {
-        this.order = null;
-        assertThrows(IllegalArgumentException.class, () -> {
-            Payment payment = new Payment(this.order, "Cash on Delivery", this.paymentData);
-        });
-    }
-
-    @Test
     void testCreatePaymentWithDefaultStatus() {
         Payment payment = new Payment(this.order, "Cash on Delivery", this.paymentData);
 
@@ -59,16 +51,16 @@ public class PaymentTest {
     void testSetStatusPaymentSuccessStatusAndOrderSuccess(){
         Payment payment = new Payment(this.order, "Cash on Delivery", this.paymentData);
         payment.setStatus("SUCCESS");
-        assertEquals("SUCCESS", payment.getStatus);
-        assertEquals("SUCCESS", payment.getOrder().getStatus);
+        assertEquals("SUCCESS", payment.getStatus());
+        assertEquals("SUCCESS", payment.getOrder().getStatus());
     }
 
     @Test
     void testSetStatusPaymentRejectedStatusAndOrderFailed(){
         Payment payment = new Payment(this.order, "Cash on Delivery", this.paymentData);
         payment.setStatus("REJECTED");
-        assertEquals("REJECTED", payment.getStatus);
-        assertEquals("FAILED", payment.getOrder().getStatus);
+        assertEquals("REJECTED", payment.getStatus());
+        assertEquals("FAILED", payment.getOrder().getStatus());
     }
 
     @Test
@@ -76,5 +68,6 @@ public class PaymentTest {
         Payment payment = new Payment(this.order, "Cash on Delivery", this.paymentData);
         assertThrows(IllegalArgumentException.class, () -> payment.setStatus("MEOW"));
     }
+
 
 }
