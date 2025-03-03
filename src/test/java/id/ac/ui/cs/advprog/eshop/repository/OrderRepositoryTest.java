@@ -6,8 +6,6 @@ import id.ac.ui.cs.advprog.eshop.enums.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.internal.matchers.Or;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -110,7 +108,7 @@ public class OrderRepositoryTest {
     }
 
     @Test
-    void testFiindByIdIfIdNotFound(){
+    void testFindByIdIfIdNotFound(){
         for(Order order: orders){
             orderRepository.save(order);
         }
@@ -134,7 +132,7 @@ public class OrderRepositoryTest {
         orderRepository.save(orders.get(1));
 
         List<Order> orderList = orderRepository.findAllByAuthor(
-                orders.get(1).getAuthor().toLowerCase);
+                orders.get(1).getAuthor().toLowerCase());
         assertTrue(orderList.isEmpty());
     }
 
