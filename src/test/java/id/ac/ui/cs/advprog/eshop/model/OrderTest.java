@@ -1,7 +1,6 @@
 package id.ac.ui.cs.advprog.eshop.model;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.Or;
 
@@ -36,26 +35,19 @@ public class OrderTest {
         });
     }
 
-
     @Test
     void testCreateOrderDefaultStatus() {
-        List<Product> products = new ArrayList<>();
-        Product product1 = new Product();
-        product1.setProductName("Sampo Cap Bambang");
-        Product product2 = new Product();
-        product2.setProductName("Sabun Cap Usep");
+        Order order = new Order("13652556-012a-4c07-b546-54eb1396d79b", this.products, 1708560000L, "Safira Sudrajat");
 
-        products.add(product1);
-        products.add(product2);
-
-        Order order = new Order(products, "Safira Sudrajat");
-
-        assertSame(products, order.getProducts());
+        assertSame(this.products, order.getProducts());
         assertEquals(2, order.getProducts().size());
         assertEquals("Sampo Cap Bambang", order.getProducts().get(0).getProductName());
         assertEquals("Sabun Cap Usep", order.getProducts().get(1).getProductName());
+
+        assertEquals("13652556-012a-4c07-b546-54eb1396d79b", order.getId());
+        assertEquals(1708560000L, order.getOrderTime());
         assertEquals("Safira Sudrajat", order.getAuthor());
-        assertEquals(Order.Status.WAITING_PAYMENT, order.getStatus());
+        assertEquals("WAITING_PAYMENT", order.getStatus());
     }
 
     @Test
