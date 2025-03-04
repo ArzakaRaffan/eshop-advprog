@@ -30,13 +30,13 @@ public class PaymentTest {
     void testCreatePaymentWithNullOrder(){
         this.order = null;
         assertThrows(IllegalArgumentException.class, () -> {
-            Payment payment = new Payment(this.order, "Cash on Delivery", Map.of("ESHOP1234ABC5678", "SUCCESS"));
+            Payment payment = new Payment( "10287-a9ke90-001k-b5y6-542k203k5j",this.order, "Cash on Delivery", Map.of("ESHOP1234ABC5678", "SUCCESS"));
         });
     }
 
     @Test
     void testCreatePaymentWithExistsOrder() {
-        Payment payment = new Payment(this.order, "Cash on Delivery", Map.of("ESHOP1234ABC5678", "SUCCESS"));
+        Payment payment = new Payment("10287-a9ke90-001k-b5y6-542k203k5j",this.order, "Cash on Delivery", Map.of("ESHOP1234ABC5678", "SUCCESS"));
         assertEquals(this.order, payment.getOrder());
         assertEquals("Cash on Delivery", payment.getMethod());
         assertEquals(Map.of("ESHOP1234ABC5678", "SUCCESS"), payment.getPaymentData());
@@ -44,7 +44,7 @@ public class PaymentTest {
 
     @Test
     void testCreatePaymentWithDefaultStatus() {
-        Payment payment = new Payment(this.order, "Cash on Delivery", Map.of("ESHOP1234ABC5678", "SUCCESS"));
+        Payment payment = new Payment("10287-a9ke90-001k-b5y6-542k203k5j",this.order, "Cash on Delivery", Map.of("ESHOP1234ABC5678", "SUCCESS"));
         assertEquals("PENDING", payment.getStatus());
     }
 
