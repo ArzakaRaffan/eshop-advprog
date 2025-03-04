@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -112,5 +113,24 @@ public class PaymentRepositoryTest {
         }
         Payment findResult = paymentRepository.findById("Posyandu Jeruk");
         assertNull(findResult);
+    }
+
+    @Test
+    void testFindAllIfEmpty(){
+        Iterator<Payment> paymentIterator = paymentRepository.findAll();
+        assertFalse(paymentIterator.hasNext());
+    }
+
+    @Test
+    void testFindAllIfMoreThanOnePayment(){
+        for(Payment payment: payments){
+            paymentRepository.save(payment);
+        }
+        Iterator<Payment> paymentIterator = paymentRepository.findAll();
+        assertTrue(paymentIterator.hasNext());
+        Payment firstPayment = paymentIterator.next();
+        assertEquals(firstPayment.getId(), payments.get(0).getId());
+        Payment secondPayment = paymentIterator.next();
+        assertEquals(secondPayment.getId(), payments.get(1).getId());
     }
 }

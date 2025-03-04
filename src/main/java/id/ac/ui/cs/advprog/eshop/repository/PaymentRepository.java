@@ -5,6 +5,7 @@ import id.ac.ui.cs.advprog.eshop.model.Payment;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Repository
@@ -32,5 +33,9 @@ public class PaymentRepository {
             }
         }
         return null;
+    }
+
+    public Iterator<Payment> findAll(){
+        return payments.iterator();
     }
 }
