@@ -1,5 +1,7 @@
 package id.ac.ui.cs.advprog.eshop.service;
 
+import id.ac.ui.cs.advprog.eshop.enums.OrderStatus;
+import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import id.ac.ui.cs.advprog.eshop.model.Order;
 import id.ac.ui.cs.advprog.eshop.model.Payment;
 import id.ac.ui.cs.advprog.eshop.model.Product;
@@ -41,8 +43,8 @@ public class PaymentServiceTest {
         when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Payment payment = paymentService.addPayment(order, "VOUCHER", paymentData);
-        assertEquals("SUCCESS", payment.getStatus());
-        assertEquals("SUCCESS", payment.getOrder().getStatus());
+        assertEquals(PaymentStatus.SUCCESS.getValue(), payment.getStatus());
+        assertEquals(OrderStatus.SUCCESS.getValue(), payment.getOrder().getStatus());
     }
 
     @Test
@@ -53,8 +55,8 @@ public class PaymentServiceTest {
         when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Payment payment = paymentService.addPayment(order, "VOUCHER", paymentData);
-        assertEquals("REJECTED", payment.getStatus());
-        assertEquals("FAILED", payment.getOrder().getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), payment.getOrder().getStatus());
     }
 
     @Test
@@ -65,8 +67,8 @@ public class PaymentServiceTest {
         when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Payment payment = paymentService.addPayment(order, "COD", paymentData);
-        assertEquals("SUCCESS", payment.getStatus());
-        assertEquals("SUCCESS", payment.getOrder().getStatus());
+        assertEquals(PaymentStatus.SUCCESS.getValue(), payment.getStatus());
+        assertEquals(OrderStatus.SUCCESS.getValue(), payment.getOrder().getStatus());
     }
 
     @Test
@@ -78,8 +80,8 @@ public class PaymentServiceTest {
 
         Payment payment = paymentService.addPayment(order, "COD", paymentData);
         assertNotNull(payment);
-        assertEquals("REJECTED", payment.getStatus());
-        assertEquals("FAILED", payment.getOrder().getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), payment.getOrder().getStatus());
     }
 
     @Test
@@ -91,8 +93,8 @@ public class PaymentServiceTest {
 
         Payment resultPayment = paymentService.addPayment(order, "COD", paymentData);
 
-        assertEquals("REJECTED", resultPayment.getStatus());
-        assertEquals("FAILED", resultPayment.getOrder().getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), resultPayment.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), resultPayment.getOrder().getStatus());
     }
 
     @Test
@@ -104,8 +106,8 @@ public class PaymentServiceTest {
 
         Payment resultPayment = paymentService.addPayment(order, "COD", paymentData);
 
-        assertEquals("REJECTED", resultPayment.getStatus());
-        assertEquals("FAILED", resultPayment.getOrder().getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), resultPayment.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), resultPayment.getOrder().getStatus());
     }
 
     @Test
@@ -117,8 +119,8 @@ public class PaymentServiceTest {
 
         Payment resultPayment = paymentService.addPayment(order, "COD", paymentData);
 
-        assertEquals("REJECTED", resultPayment.getStatus());
-        assertEquals("FAILED", resultPayment.getOrder().getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), resultPayment.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), resultPayment.getOrder().getStatus());
     }
 
     @Test
@@ -126,7 +128,7 @@ public class PaymentServiceTest {
         Payment payment = new Payment("7hdk5sf-58fg-913h-abed-cajoled691n2u9", order, "VOUCHER", new HashMap<>());
         when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
         payment = paymentService.setStatus(payment, "SUCCESS");
-        assertEquals("SUCCESS", payment.getStatus());
+        assertEquals(PaymentStatus.SUCCESS.getValue(), payment.getStatus());
     }
 
     @Test
@@ -134,7 +136,7 @@ public class PaymentServiceTest {
         Payment payment = new Payment("7hdk5sf-58fg-913h-abed-cajoled691n2u9", order, "VOUCHER", new HashMap<>());
         when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
         payment = paymentService.setStatus(payment, "REJECTED");
-        assertEquals("REJECTED", payment.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
     }
 
     @Test

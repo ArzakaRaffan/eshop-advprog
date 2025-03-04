@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.eshop.model;
 
+import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,22 +31,44 @@ public class PaymentTest {
     void testCreatePaymentWithNullOrder(){
         this.order = null;
         assertThrows(IllegalArgumentException.class, () -> {
-            Payment payment = new Payment( "10287-a9ke90-001k-b5y6-542k203k5j",this.order, "Cash on Delivery", Map.of("ESHOP1234ABC5678", "SUCCESS"));
+            Payment payment = new Payment( "10287-a9ke90-001k-b5y6-542k203k5j",this.order, "COD", Map.of("ESHOP1234ABC5678", "SUCCESS"));
         });
     }
 
     @Test
     void testCreatePaymentWithExistsOrder() {
-        Payment payment = new Payment("10287-a9ke90-001k-b5y6-542k203k5j",this.order, "Cash on Delivery", Map.of("ESHOP1234ABC5678", "SUCCESS"));
+        Payment payment = new Payment("10287-a9ke90-001k-b5y6-542k203k5j",this.order, "COD", Map.of("ESHOP1234ABC5678", "SUCCESS"));
         assertEquals(this.order, payment.getOrder());
-        assertEquals("Cash on Delivery", payment.getMethod());
+        assertEquals("COD", payment.getMethod());
         assertEquals(Map.of("ESHOP1234ABC5678", "SUCCESS"), payment.getPaymentData());
     }
 
     @Test
     void testCreatePaymentWithDefaultStatus() {
-        Payment payment = new Payment("10287-a9ke90-001k-b5y6-542k203k5j",this.order, "Cash on Delivery", Map.of("ESHOP1234ABC5678", "SUCCESS"));
-        assertEquals("PENDING", payment.getStatus());
+        Payment payment = new Payment("10287-a9ke90-001k-b5y6-542k203k5j",this.order, "COD", Map.of("ESHOP1234ABC5678", "SUCCESS"));
+        assertEquals(PaymentStatus.PENDING.getValue(), payment.getStatus());
+    }
+
+    @Test
+    void testCreatePaymentWithSuccessStatus(){
+        Payment payment = new Payment("10287-a9ke90-001k-b5y6-542k203k5j",this.order, "COD", Map.of("ESHOP1234ABC5678", "SUCCESS"));
+        payment.setStatus("SUCCESS");
+        assertEquals(PaymentStatus.SUCCESS.getValue(), payment.getStatus());
+    }
+
+    @Test
+    void testCreatePaymentWithRejectedStatus(){
+        Payment payment = new Payment("10287-a9ke90-001k-b5y6-542k203k5j",this.order, "COD", Map.of("ESHOP1234ABC5678", "SUCCESS"));
+        payment.setStatus("REJECTED");
+        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
+    }
+    @Test
+
+    void testCreatePaymentWithInvalidStatus(){
+        Payment payment = new Payment("10287-a9ke90-001k-b5y6-542k203k5j",this.order, "COD", Map.of("ESHOP1234ABC5678", "SUCCESS"));
+        assertThrows(IllegalArgumentException.class, () -> {
+           payment.setStatus("MEOW");
+        });
     }
 
 
