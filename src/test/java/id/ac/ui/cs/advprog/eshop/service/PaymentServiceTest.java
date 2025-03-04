@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.eshop.service;
 
 import id.ac.ui.cs.advprog.eshop.model.Order;
 import id.ac.ui.cs.advprog.eshop.model.Payment;
+import id.ac.ui.cs.advprog.eshop.model.Product;
 import id.ac.ui.cs.advprog.eshop.repository.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,10 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,11 +23,14 @@ public class PaymentServiceTest {
     PaymentRepository paymentRepository;
 
     Order order;
+    List<Product> products;
 
     @BeforeEach
     void setUp(){
         MockitoAnnotations.openMocks(this);
-        when(order.getId()).thenReturn("order1");
+         products = List.of(new Product());
+
+        order = new Order("O123", products, 1708570000L, "user123");
     }
 
     @Test
@@ -37,8 +38,9 @@ public class PaymentServiceTest {
         Map<String, String> paymentData = new HashMap<>();
         paymentData.put("voucherCode", "ESHOP1234ABC5678");
 
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         Payment payment = paymentService.addPayment(order, "VOUCHER", paymentData);
-        assertNotNull(payment);
         assertEquals("SUCCESS", payment.getStatus());
         assertEquals("SUCCESS", payment.getOrder().getStatus());
     }
@@ -46,10 +48,11 @@ public class PaymentServiceTest {
     @Test
     void testAddPaymentWithInValidVoucherCode(){
         Map<String, String> paymentData = new HashMap<>();
-        paymentData.put("voucherCode", "INVALID123");
+        paymentData.put("voucherCode", "INVALID123457");
+
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Payment payment = paymentService.addPayment(order, "VOUCHER", paymentData);
-        assertNotNull(payment);
         assertEquals("REJECTED", payment.getStatus());
         assertEquals("FAILED", payment.getOrder().getStatus());
     }
@@ -59,8 +62,9 @@ public class PaymentServiceTest {
         Map<String, String> paymentData = new HashMap<>();
         paymentData.put("Jalan Jilin 3 No. 122", "10000");
 
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         Payment payment = paymentService.addPayment(order, "COD", paymentData);
-        assertNotNull(payment);
         assertEquals("SUCCESS", payment.getStatus());
         assertEquals("SUCCESS", payment.getOrder().getStatus());
     }
@@ -70,10 +74,25 @@ public class PaymentServiceTest {
         Map<String, String> paymentData = new HashMap<>();
         paymentData.put("", "10000");
 
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         Payment payment = paymentService.addPayment(order, "COD", paymentData);
         assertNotNull(payment);
         assertEquals("REJECTED", payment.getStatus());
         assertEquals("FAILED", payment.getOrder().getStatus());
+    }
+
+    @Test
+    void testAddPaymentWithInvalidCOD_NullAddress(){
+        Map<String, String> paymentData = new HashMap<>();
+        paymentData.put(null, "10000");
+
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Payment resultPayment = paymentService.addPayment(order, "COD", paymentData);
+
+        assertEquals("REJECTED", resultPayment.getStatus());
+        assertEquals("FAILED", resultPayment.getOrder().getStatus());
     }
 
     @Test
@@ -81,15 +100,31 @@ public class PaymentServiceTest {
         Map<String, String> paymentData = new HashMap<>();
         paymentData.put("Jalan Jilin 3 No. 122", "");
 
-        Payment payment = paymentService.addPayment(order, "COD", paymentData);
-        assertNotNull(payment);
-        assertEquals("REJECTED", payment.getStatus());
-        assertEquals("FAILED", payment.getOrder().getStatus());
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Payment resultPayment = paymentService.addPayment(order, "COD", paymentData);
+
+        assertEquals("REJECTED", resultPayment.getStatus());
+        assertEquals("FAILED", resultPayment.getOrder().getStatus());
+    }
+
+    @Test
+    void testAddPaymentWithInvalidCOD_NullFee(){
+        Map<String, String> paymentData = new HashMap<>();
+        paymentData.put("Jalan Jilin 3 No. 122", null);
+
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Payment resultPayment = paymentService.addPayment(order, "COD", paymentData);
+
+        assertEquals("REJECTED", resultPayment.getStatus());
+        assertEquals("FAILED", resultPayment.getOrder().getStatus());
     }
 
     @Test
     void testSetStatus_Success() {
         Payment payment = new Payment("7hdk5sf-58fg-913h-abed-cajoled691n2u9", order, "VOUCHER", new HashMap<>());
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
         payment = paymentService.setStatus(payment, "SUCCESS");
         assertEquals("SUCCESS", payment.getStatus());
     }
@@ -97,8 +132,18 @@ public class PaymentServiceTest {
     @Test
     void testSetStatus_Rejected() {
         Payment payment = new Payment("7hdk5sf-58fg-913h-abed-cajoled691n2u9", order, "VOUCHER", new HashMap<>());
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
         payment = paymentService.setStatus(payment, "REJECTED");
         assertEquals("REJECTED", payment.getStatus());
+    }
+
+    @Test
+    void testSetInvalidStatus(){
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        assertThrows(IllegalArgumentException.class, () -> {
+            Payment payment = new Payment("7hdk5sf-58fg-913h-abed-cajoled691n2u9", order, "VOUCHER", new HashMap<>());
+            payment = paymentService.setStatus(payment, "MEOW");
+        });
     }
 
     @Test
@@ -136,7 +181,6 @@ public class PaymentServiceTest {
         verify(paymentRepository, times(1)).save(payment1);
         verify(paymentRepository, times(1)).save(payment2);
         verify(paymentRepository, times(1)).findAll();
-
     }
 
 }

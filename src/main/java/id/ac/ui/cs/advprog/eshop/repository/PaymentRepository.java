@@ -10,17 +10,14 @@ import java.util.List;
 
 @Repository
 public class PaymentRepository {
-    private List<Payment> payments = new ArrayList<>();
+    private final List<Payment> payments = new ArrayList<>();
 
     public Payment save(Payment payment){
-        int i = 0;
-        for(Payment savedPayment: payments){
-            if(savedPayment.getId().equals(payment.getId())){
-                payments.remove(i);
-                payments.add(i, payment);
+        for (int i = 0; i < payments.size(); i++) {
+            if (payments.get(i).getId().equals(payment.getId())) {
+                payments.set(i, payment);
                 return payment;
             }
-            i+=1;
         }
         payments.add(payment);
         return payment;
